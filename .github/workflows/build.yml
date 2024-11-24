@@ -14,4 +14,4 @@ on:
 jobs:
   call-build-workflow:
     name: Sigrok artifact builder
-    uses: sigrokproject/sigrok-build/.github/workflows/build.yml@master
+    uses: xqymain/sigrok-build/.github/workflows/build.yml@master
