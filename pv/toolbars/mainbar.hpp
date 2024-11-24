@@ -146,6 +146,7 @@ private Q_SLOTS:
 
 	void on_add_decoder_clicked();
 	void on_add_math_signal_clicked();
+	void on_run_python_script_clicked();
 
 protected:
 	void add_toolbar_widgets();

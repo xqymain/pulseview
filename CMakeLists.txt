@@ -283,8 +283,8 @@ memaccess_check_unaligned_le(HAVE_UNALIGNED_LITTLE_ENDIAN_ACCESS)
 #= Config Header
 #-------------------------------------------------------------------------------
 
-set(PV_TITLE PulseView)
-set(PV_VERSION_STRING "0.5.0")
+set(PV_TITLE PulseView-FPGA)
+set(PV_VERSION_STRING "0.5.0-1")
 
 if(GLIBMM_2_4_FOUND)
 	set(PV_GLIBMM_VERSION ${PKGDEPS_glibmm-2.4_VERSION})
