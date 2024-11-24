@@ -969,6 +969,7 @@ void MainBar::add_toolbar_widgets()
 	addWidget(add_decoder_button_);
 #endif
 	addWidget(add_math_signal_button_);
+	addWidget(run_python_script_button_);
 }
 
 bool MainBar::eventFilter(QObject *watched, QEvent *event)
