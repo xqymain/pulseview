@@ -30,6 +30,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolTip>
+#include <QProcess>
 
 #include "mainbar.hpp"
 
@@ -114,7 +115,8 @@ MainBar::MainBar(Session &session, QWidget *parent, pv::views::trace::View *view
 #ifdef ENABLE_DECODE
 	add_decoder_button_(new QToolButton()),
 #endif
-	add_math_signal_button_(new QToolButton())
+	add_math_signal_button_(new QToolButton()),
+	run_python_script_button_(new QToolButton())
 {
 	setObjectName(QString::fromUtf8("MainBar"));
 
@@ -263,6 +265,15 @@ MainBar::MainBar(Session &session, QWidget *parent, pv::views::trace::View *view
 
 	connect(add_math_signal_button_, SIGNAL(clicked()),
 		this, SLOT(on_add_math_signal_clicked()));
+
+	// Setup the run script button
+	run_python_script_button_->setIcon(QIcon(":/icons/run-pythonscript.svg"));
+	run_python_script_button_->setPopupMode(QToolButton::InstantPopup);
+	run_python_script_button_->setToolTip(tr("Run python script"));
+	run_python_script_button_->setShortcut(QKeySequence(Qt::Key_M));
+
+	connect(run_python_script_button_, SIGNAL(clicked()),
+		this, SLOT(on_run_python_script_clicked()));
 
 
 	connect(&sample_count_, SIGNAL(value_changed()),
@@ -922,6 +933,20 @@ void MainBar::on_add_math_signal_clicked()
 {
 	shared_ptr<data::SignalBase> signal = make_shared<data::MathSignal>(session_);
 	session_.add_generated_signal(signal);
+}
+
+void MainBar::on_run_python_script_clicked()
+{
+	QProcess *process = new QProcess(this);
+	QString pythonInterpreter = "python";
+	QString scriptPath = "D:/custom.py";
+	process->start(pythonInterpreter, QStringList() << scriptPath);
+	if (!process->waitForStarted()) {
+		show_session_error("Script Error", "Failed to start process D:/custom.py");
+    }
+	process->waitForFinished();
+	show_session_error("Script Finished", "The script has been successfully executed.");
+	process->deleteLater();
 }
 
 void MainBar::add_toolbar_widgets()

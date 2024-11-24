@@ -188,6 +188,7 @@ private:
 #endif
 
 	QToolButton *add_math_signal_button_;
+	QToolButton *run_python_script_button_;
 };
 
 } // namespace toolbars
