@@ -30,7 +30,6 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolTip>
-#include <QProcess>
 
 #include "mainbar.hpp"
 
@@ -42,6 +41,7 @@
 #include <pv/devices/inputfile.hpp>
 #include <pv/devices/sessionfile.hpp>
 #include <pv/dialogs/connect.hpp>
+#include <pv/dialogs/execute.hpp>
 #include <pv/dialogs/inputoutputoptions.hpp>
 #include <pv/dialogs/storeprogress.hpp>
 #include <pv/mainwindow.hpp>
@@ -937,16 +937,8 @@ void MainBar::on_add_math_signal_clicked()
 
 void MainBar::on_run_python_script_clicked()
 {
-	QProcess *process = new QProcess(this);
-	QString pythonInterpreter = "python";
-	QString scriptPath = "D:/custom.py";
-	process->start(pythonInterpreter, QStringList() << scriptPath);
-	if (!process->waitForStarted()) {
-		show_session_error("Script Error", "Failed to start process D:/custom.py");
-    }
-	process->waitForFinished();
-	show_session_error("Script Finished", "The script has been successfully executed.");
-	process->deleteLater();
+	dialogs::Execute dlg(this);
+	dlg.exec();
 }
 
 void MainBar::add_toolbar_widgets()

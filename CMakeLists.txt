@@ -356,6 +356,7 @@ set(pulseview_SOURCES
 	pv/devices/inputfile.cpp
 	pv/devices/sessionfile.cpp
 	pv/dialogs/connect.cpp
+	pv/dialogs/execute.cpp
 	pv/dialogs/inputoutputoptions.cpp
 	pv/dialogs/settings.cpp
 	pv/dialogs/storeprogress.cpp
@@ -425,6 +426,7 @@ set(pulseview_HEADERS
 	pv/data/mathsignal.hpp
 	pv/data/signalbase.hpp
 	pv/dialogs/connect.hpp
+	pv/dialogs/execute.hpp
 	pv/dialogs/inputoutputoptions.hpp
 	pv/dialogs/settings.hpp
 	pv/dialogs/storeprogress.hpp
