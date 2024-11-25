@@ -21,6 +21,7 @@
 
 #include <QFileDialog>
 #include <QProcess>
+#include <QMessageBox>
 
 #include "execute.hpp"
 
