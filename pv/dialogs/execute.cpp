@@ -64,6 +64,8 @@ void Execute::browseFile() {
 void Execute::executeOperation() {
     QString parameter = paramEdit->text();
     QString filePath = fileEdit->text();
+    QMessageBox msg(this);
+	msg.setStandardButtons(QMessageBox::Ok);
 
     QProcess *process = new QProcess(this);
 	QString pythonInterpreter = "python";
@@ -71,10 +73,16 @@ void Execute::executeOperation() {
     arguments << filePath << parameter;
 	process->start(pythonInterpreter, arguments);
 	if (!process->waitForStarted()) {
-		show_session_error("Script Error", "The script has not been started.");
+        msg.setText("Script Error\n\nThe script has not been started.");
+        msg.setIcon(QMessageBox::Warning);
+        msg.exec();
     }
-	process->waitForFinished();
-	show_session_error("Script Finished", "The script has been successfully executed.");
+    else {
+	    process->waitForFinished();
+	    msg.setText("Script Finished\n\nThe script has been successfully executed.");
+        msg.setIcon(QMessageBox::Information);
+        msg.exec();
+    }
 	process->deleteLater();
 
     accept();
