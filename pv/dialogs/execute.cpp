@@ -22,6 +22,8 @@
 #include <QFileDialog>
 #include <QProcess>
 #include <QMessageBox>
+#include <QThread>
+#include <QTemporaryFile>
 
 #include "execute.hpp"
 
@@ -31,14 +33,14 @@ namespace dialogs {
 
 Execute::Execute(QWidget *parent) : QDialog(parent)
 {
-	setWindowTitle(tr("Execute Data Unpack"));
+	setWindowTitle(tr("Execute PCAPNG Unpack"));
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QLabel *paramLabel = new QLabel("Channels: ", this);
     paramEdit = new QLineEdit(this);
     mainLayout->addWidget(paramLabel);
     mainLayout->addWidget(paramEdit);
 
-    QLabel *fileLabel = new QLabel("Script File: ", this);
+    QLabel *fileLabel = new QLabel("PCAPNG File: ", this);
     QHBoxLayout *fileLayout = new QHBoxLayout();
     fileEdit = new QLineEdit(this);
     QPushButton *browseButton = new QPushButton("Browse", this);
@@ -56,7 +58,7 @@ Execute::Execute(QWidget *parent) : QDialog(parent)
 
 
 void Execute::browseFile() {
-    QString filePath = QFileDialog::getOpenFileName(this, "Select Script", "", "Pythonfile (*.py)");
+    QString filePath = QFileDialog::getOpenFileName(this, "Select PCAPNG File", "", "PCAPNGfile (*.pcapng)");
     if (!filePath.isEmpty()) {
         fileEdit->setText(filePath);
     }
@@ -65,26 +67,51 @@ void Execute::browseFile() {
 void Execute::executeOperation() {
     QString parameter = paramEdit->text();
     QString filePath = fileEdit->text();
+
+    QFile resourceFile(":/script.py");
+    if (!resourceFile.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    QTemporaryFile tempFile;
+    if (tempFile.open()) {
+        tempFile.write(resourceFile.readAll());
+        tempFile.flush();
+    } else {
+        return;
+    }
+    QString scriptPath = tempFile.fileName();
+    QString binPath = (QFileInfo(filePath).absolutePath() + 
+                        "/Gen_Channels" + parameter + ".bin");
+
     QMessageBox msg(this);
 	msg.setStandardButtons(QMessageBox::Ok);
 
-    QProcess *process = new QProcess(this);
 	QString pythonInterpreter = "python";
     QStringList arguments;
-    arguments << filePath << parameter;
-	process->start(pythonInterpreter, arguments);
-	if (!process->waitForStarted()) {
+    
+    arguments << scriptPath << filePath << binPath << parameter;
+    
+	if (!QProcess::startDetached(pythonInterpreter, arguments)) {
         msg.setText("Script Error\n\nThe script has not been started.");
         msg.setIcon(QMessageBox::Warning);
         msg.exec();
     }
     else {
-	    process->waitForFinished();
-	    msg.setText("Script Finished\n\nThe script has been successfully executed.");
+        QMessageBox waitBox(this);
+        waitBox.setWindowTitle("Processing");
+        waitBox.setText("Script is running, please wait...");
+        waitBox.setStandardButtons(QMessageBox::NoButton);
+        waitBox.setIcon(QMessageBox::Information);
+        waitBox.show();
+
+        QThread::sleep(50);
+
+        waitBox.accept();
+	    msg.setText("Script Finished\n\nBinary file has started to be generated.");
         msg.setIcon(QMessageBox::Information);
         msg.exec();
     }
-	process->deleteLater();
 
     accept();
 }

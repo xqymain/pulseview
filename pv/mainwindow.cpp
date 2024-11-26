@@ -67,7 +67,7 @@ namespace pv {
 
 using toolbars::MainBar;
 
-const QString MainWindow::WindowTitle = tr("PulseView");
+const QString MainWindow::WindowTitle = tr("3710_logic Analyser");
 
 MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
 	QMainWindow(parent),

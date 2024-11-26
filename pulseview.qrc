@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+	<file>script.py</file>
 	<file>icons/add-decoder.svg</file>
 	<file>icons/add-math-signal.svg</file>
 	<file>icons/application-exit.png</file>

@@ -99,6 +99,7 @@ public:
 
 	void save_sessions();
 	void restore_sessions();
+	
 
 private:
 	void setup_ui();
