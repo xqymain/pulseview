@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QTemporaryFile>
+#include <QFile>
 
 #include "execute.hpp"
 
@@ -39,6 +40,11 @@ Execute::Execute(QWidget *parent) : QDialog(parent)
     paramEdit = new QLineEdit(this);
     mainLayout->addWidget(paramLabel);
     mainLayout->addWidget(paramEdit);
+
+    QLabel *binLabel = new QLabel("Bin Name: ", this);
+    binEdit = new QLineEdit(this);
+    mainLayout->addWidget(binLabel);
+    mainLayout->addWidget(binEdit);
 
     QLabel *fileLabel = new QLabel("PCAPNG File: ", this);
     QHBoxLayout *fileLayout = new QHBoxLayout();
@@ -66,6 +72,7 @@ void Execute::browseFile() {
 
 void Execute::executeOperation() {
     QString parameter = paramEdit->text();
+    QString binName = binEdit->text();
     QString filePath = fileEdit->text();
 
     QFile resourceFile(":/script.py");
@@ -82,7 +89,7 @@ void Execute::executeOperation() {
     }
     QString scriptPath = tempFile.fileName();
     QString binPath = (QFileInfo(filePath).absolutePath() + 
-                        "/Gen_Channels" + parameter + ".bin");
+                        "/" + binName + "_" + parameter + ".bin");
 
     QMessageBox msg(this);
 	msg.setStandardButtons(QMessageBox::Ok);
@@ -105,7 +112,8 @@ void Execute::executeOperation() {
         waitBox.setIcon(QMessageBox::Information);
         waitBox.show();
 
-        QThread::sleep(50);
+        while(!QFile::exists(binPath))
+            QThread::sleep(3);
 
         waitBox.accept();
 	    msg.setText("Script Finished\n\nBinary file has started to be generated.");

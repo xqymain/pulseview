@@ -46,6 +46,7 @@ private Q_SLOTS:
 
 private:
 	QLineEdit *paramEdit;
+	QLineEdit *binEdit;
     QLineEdit *fileEdit;
 };
 
